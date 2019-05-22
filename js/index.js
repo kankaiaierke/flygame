@@ -8,20 +8,19 @@
 			top: 0,
 			radius: 0,
 			speed: 10,
-			pushSpeed: 1000,
-			pushNow: 1000,
+			pushSpeed: 1000,//子弹发射频率，每1000毫秒发射一次
+			pushNow: 1000,//子弹发射频率
 			type: 1,
-		},
-		laserArr: [],
-		targetArr: [],
-		boomArr:[],
-		frequency: 2000,
-		frequencyNow: 2000,
-		targetSpeed: 0.5,
-		hitNum: 0,
-		loseNum: 0,
-		flags:false,
-		flags: false,
+		},//自己飞机
+		laserArr: [],//子弹数组
+		targetArr: [],//敌机数组
+		boomArr:[],//爆炸数组
+		frequency: 2000,//敌机生成频率
+		frequencyNow: 2000,//敌机生成频率
+		targetSpeed: 0.5,//难度系数，越大越难
+		hitNum: 0,//击落数
+		loseNum: 0,//逃逸数
+		flags:false,//拖拽用
 	    position: {
 	      x: 0,
 	      y: 0
@@ -37,11 +36,12 @@
 		var self = this;
 	},
 	mounted: function() {
-		FastClick.attach(document.body);
+		//FastClick.attach(document.body);
 		var self = this;
 		self.creatGame();
 	},
 	methods: {
+		//绑定键盘操作
 		keyBoardMove: function() {
 			var self = this;
 			document.onkeydown = function(e) {
@@ -73,17 +73,19 @@
 			self.phonePlear.left = (document.getElementById("main").offsetWidth - self.phonePlear.width) * 0.5;
 			self.phonePlear.top = (document.getElementById("main").offsetHeight - self.phonePlear.height) * 0.8;
 			self.keyBoardMove();
-			self.phonePlear.pushSpeed = document.getElementById("main").offsetHeight;
+			self.phonePlear.pushSpeed = document.getElementById("main").offsetHeight;//改变发射频率
 			self.phonePlear.pushNow = self.phonePlear.pushSpeed;
 			var autoFly = setInterval(function() {
 				self.autoRun();
 			}, 10);
 		},
-		deepClone: function(obj) { //深拷贝
+		//深拷贝
+		deepClone: function(obj) { 
 			let _obj = JSON.stringify(obj),
 				objClone = JSON.parse(_obj);
 			return objClone
 		},
+		//飞机往上
 		phoneUp: function() {
 			var self = this;
 			if(self.phonePlear.top - self.phonePlear.speed > 0) {
@@ -92,6 +94,7 @@
 				self.phonePlear.top = 0;
 			}
 		},
+		//飞机往右
 		phoneRight: function() {
 			var self = this;
 			var maxLeft = document.getElementById("main").offsetWidth - self.phonePlear.width;
@@ -101,6 +104,7 @@
 				self.phonePlear.left = maxLeft;
 			}
 		},
+		//飞机往下
 		phoneDown: function() {
 			var self = this;
 			var maxTop = document.getElementById("main").offsetHeight - self.phonePlear.height;
@@ -110,6 +114,7 @@
 				self.phonePlear.top = maxTop;
 			}
 		},
+		//飞机往左
 		phoneLeft: function() {
 			var self = this;
 			if(self.phonePlear.left - self.phonePlear.speed > 0) {
@@ -118,22 +123,7 @@
 				self.phonePlear.left = 0;
 			}
 		},
-		targetFly: function() {
-			var self = this;
-			for(var i = 0; i < self.targetArr.length;) {
-				if(i >= self.targetArr.length) {
-					break;
-				}
-				self.targetArr[i].top += self.targetArr[i].speed;
-				let maxTop = document.getElementById("main").offsetHeight - self.targetArr[i].height;
-				if(self.targetArr[i].top > maxTop && self.checkByIndex(i)) {
-					self.targetArr.splice(i, 1);
-				} else {
-					i++;
-				}
-			}
-			return false;
-		},
+		//某敌机与子弹判断是否接触
 		checkoutTouch: function(rect) {
 			var self = this;
 			if(self.laserArr.length > 0) {
@@ -157,6 +147,7 @@
 			}
 			return false;
 		},
+		//飞机鼠标移动
 		movePhone: function(e) {
 			var self = this;
 			let odiv = e.target; //获取目标元素
@@ -199,11 +190,13 @@
 				document.onmouseup = null;
 			};
 		},
+		//动画
 		autoRun: function() {
 			var self = this;
-			let maxLeft = document.getElementById("main").offsetWidth;
-			let maxTop = document.getElementById("main").offsetHeight;
-
+			let maxLeft = document.getElementById("main").offsetWidth;//最大top
+			let maxTop = document.getElementById("main").offsetHeight;//最大left
+			
+			//发射子弹
 			if(self.phonePlear.pushNow - 10 > 0) {
 				self.phonePlear.pushNow -= 10;
 			} else {
@@ -219,19 +212,9 @@
 				self.laserArr.push(laser);
 				self.phonePlear.pushNow = self.phonePlear.pushSpeed;
 			}
-
-			/*if(self.laserArr.length < 1){
-				var laser = {
-					width:4,
-					height:30,
-					left:self.phonePlear.left+self.phonePlear.width*0.5,
-					top:self.phonePlear.top,
-					radius:2,
-					speed:10,
-				};
-				self.laserArr.push(laser);
-			}*/
-
+			
+			
+			//生成敌机
 			if(self.frequencyNow - 10 > 0) {
 				self.frequencyNow -= 10;
 			} else {
@@ -253,7 +236,9 @@
 				self.targetArr.push(target);
 				self.frequencyNow = self.frequency;
 			}
-
+			
+			
+			//子弹运动
 			for(var i = 0; i < self.laserArr.length;) {
 				self.laserArr[i].top -= self.laserArr[i].speed;
 				if(self.laserArr[i].top < -self.laserArr[i].height) {
@@ -263,6 +248,8 @@
 				}
 			}
 			
+			
+			//爆炸消失
 			for(var i = 0; i < self.boomArr.length;) {
 				if(self.boomArr[i].op > 0) {
 					self.boomArr[i].op -= 10;
@@ -271,7 +258,8 @@
 					self.boomArr.splice(i, 1);
 				}
 			}
-
+			
+			//敌机运动
 			for(var i = 0; i < self.targetArr.length;) {
 				self.targetArr[i].top += self.targetArr[i].speed;
 				var rect = {
@@ -318,6 +306,7 @@
 			this.dx = this.phonePlear.left;
 			this.dy = this.phonePlear.top;
 		},
+		//移动
 		move: function() {
 			if(this.flags) {
 				var touch;
@@ -361,12 +350,14 @@ var playVoice = (function() {
 	};
 })();
 
+//创建声音队列
 var _inputQueue = new inputQueue();
-
 _inputQueue.sendNewMessage(function(message) {
 	playVoice(message);
 });
 
+
+//声音队列
 function inputQueue() {
 	this.queue = [];
 	this.isLocked = false;
@@ -403,6 +394,8 @@ function inputQueue() {
 	}
 }
 
+
+//判断两个矩形是否重叠
 var collide = function(rect1, rect2) {
 	var maxX, maxY, minX, minY;
 	maxX = rect1.x + rect1.width >= rect2.x + rect2.width ? rect1.x + rect1.width : rect2.x + rect2.width

@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">     
+<meta charset="utf-8">             
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">     
+<meta content="yes" name="apple-mobile-web-app-capable">     
+<meta content="black" name="apple-mobile-web-app-status-bar-style">     
+<meta content="telephone=no" name="format-detection">
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>打飞机</title>
+		<link rel="stylesheet" href="css/index.css" />
+		<style>
+		</style>
+	</head>
+	<body>
+		<div class="mainBoard" id="main" v-cloak>
+			<div :class="['phone','phone'+phonePlear.type]" :style="{'width':phonePlear.width+'px','height':phonePlear.height+'px','left':phonePlear.left+'px','top':phonePlear.top+'px','border-radius':phonePlear.radius+'px'}" @mousedown="movePhone($event)" @touchstart="down"
+       @touchmove="move" @touchend="end"></div>
+			<div v-for="(laser,index) in laserArr" :style="{'width':laser.width+'px','height':laser.height+'px','left':laser.left+'px','top':laser.top+'px','border-radius':laser.radius+'px'}" class="laser"></div>
+			<div v-for="(item,index) in targetArr" :class="['phone','phone'+item.type]" :style="{'width':item.width+'px','height':item.height+'px','left':item.left+'px','top':item.top+'px','border-radius':item.radius+'px'}"></div>
+			<div v-for="(item,index) in boomArr" :class="['phone','phone'+item.type]" :style="{'width':item.width+'px','height':item.height+'px','left':item.left+'px','top':item.top+'px','border-radius':item.radius+'px','opacity':item.op/item.speed}"></div>
+			<div class="bar">共击落 {{hitNum}} 架敌机，共逃逸 {{loseNum}} 架敌机</div>
+			<div class="bar barTop">新人作品，音效、特效、算法待优化</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/fastclick.js"></script>
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+</html>

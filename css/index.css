@@ -1,0 +1,92 @@
+/*清除默认样式*/
+
+html,
+body.div,
+ul,
+li {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+ul,
+li {
+	list-style: none;
+}
+
+[v-cloak] {
+	display: none;
+}
+
+
+/*主窗体*/
+
+.mainBoard {
+	position: fixed;
+	top:0;
+	left:0;
+	right: 0;
+	bottom:0;
+}
+
+.phone{
+	position: absolute;
+}
+
+.phone0{
+	background:url(../image/0.png);
+	background-size: cover;
+	z-index: 5;
+}
+
+.phone1{
+	background:url(../image/1.png);
+	background-size: cover;
+	z-index: 5;
+}
+
+.phone2{
+	background:url(../image/2.png);
+	background-size: cover;
+	z-index: 4;
+}
+
+.phone3{
+	background:url(../image/3.png);
+	background-size: cover;
+	z-index: 4;
+}
+
+.flyInput{
+	position: absolute;
+	left:50%;
+	top:50%;
+	opacity: 0;
+	z-index: 3;
+}
+
+.laser{
+	position: absolute;
+	background: #08c;
+	z-index: 2;
+}
+
+.bar{
+	background: rgba(0,0,0,0.5);
+	height: 22px;
+	position: fixed;
+	z-index: 10;
+	left:0;
+	right: 0;
+	color: #fff;
+	text-align: center;
+	bottom: 0;
+	line-height: 20px;
+	font-size: 12px;
+}
+
+
+.barTop{
+	top:0;
+	bottom:auto;
+}

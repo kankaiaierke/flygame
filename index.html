@@ -15,9 +15,9 @@
 		</style>
 	</head>
 	<body>
-		<div class="mainBoard" id="main" v-cloak>
-			<div :class="['phone','phone'+phonePlear.type]" :style="{'width':phonePlear.width+'px','height':phonePlear.height+'px','left':phonePlear.left+'px','top':phonePlear.top+'px','border-radius':phonePlear.radius+'px'}" @mousedown="movePhone($event)" @touchstart="down"
-       @touchmove="move" @touchend="end"></div>
+		<div class="mainBoard" id="main" v-cloak @mousedown="movePhone($event)" @touchstart="down"
+			 @touchmove="move" @touchend="end">
+			<div :class="['phone','phone'+phonePlear.type]" :style="{'width':phonePlear.width+'px','height':phonePlear.height+'px','left':phonePlear.left+'px','top':phonePlear.top+'px','border-radius':phonePlear.radius+'px'}"></div>
 			<div v-for="(laser,index) in laserArr" :style="{'width':laser.width+'px','height':laser.height+'px','left':laser.left+'px','top':laser.top+'px','border-radius':laser.radius+'px'}" class="laser"></div>
 			<div v-for="(item,index) in targetArr" :class="['phone','phone'+item.type]" :style="{'width':item.width+'px','height':item.height+'px','left':item.left+'px','top':item.top+'px','border-radius':item.radius+'px'}"></div>
 			<div v-for="(item,index) in boomArr" :class="['phone','phone'+item.type]" :style="{'width':item.width+'px','height':item.height+'px','left':item.left+'px','top':item.top+'px','border-radius':item.radius+'px','opacity':item.op/item.speed}"></div>

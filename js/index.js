@@ -8,15 +8,15 @@
 			top: 0,
 			radius: 0,
 			speed: 10,
-			pushSpeed: 1000,//子弹发射频率，每1000毫秒发射一次
-			pushNow: 1000,//子弹发射频率
+			pushSpeed: 500,//子弹发射频率，每500毫秒发射一次
+			pushNow: 500,//子弹发射频率
 			type: 1,
 		},//自己飞机
 		laserArr: [],//子弹数组
 		targetArr: [],//敌机数组
 		boomArr:[],//爆炸数组
-		frequency: 2000,//敌机生成频率
-		frequencyNow: 2000,//敌机生成频率
+		frequency: 500,//敌机生成频率
+		frequencyNow: 500,//敌机生成频率
 		targetSpeed: 0.5,//难度系数，越大越难
 		hitNum: 0,//击落数
 		loseNum: 0,//逃逸数
@@ -73,14 +73,14 @@
 			self.phonePlear.left = (document.getElementById("main").offsetWidth - self.phonePlear.width) * 0.5;
 			self.phonePlear.top = (document.getElementById("main").offsetHeight - self.phonePlear.height) * 0.8;
 			self.keyBoardMove();
-			self.phonePlear.pushSpeed = document.getElementById("main").offsetHeight;//改变发射频率
-			self.phonePlear.pushNow = self.phonePlear.pushSpeed;
+			// self.phonePlear.pushSpeed = document.getElementById("main").offsetHeight;//改变发射频率
+			// self.phonePlear.pushNow = self.phonePlear.pushSpeed;
 			var autoFly = setInterval(function() {
 				self.autoRun();
 			}, 10);
 		},
 		//深拷贝
-		deepClone: function(obj) { 
+		deepClone: function(obj) {
 			let _obj = JSON.stringify(obj),
 				objClone = JSON.parse(_obj);
 			return objClone
@@ -128,21 +128,23 @@
 			var self = this;
 			if(self.laserArr.length > 0) {
 				var laserArr = self.deepClone(self.laserArr);
-				var rect1 = {
-					x: laserArr[0].left,
-					y: laserArr[0].top,
-					width: laserArr[0].width,
-					height: laserArr[0].height,
-				}
 				var rect2 = self.deepClone(rect);
-				if(collide(rect1, rect2)) {
-					if(self.laserArr.length > 0) {
-						var len = self.laserArr.length - 1;
-						self.laserArr.splice(len, 1);
+				for (let i =0; i < laserArr.length; i++) {
+					var rect1 = {
+						x: laserArr[i].left,
+						y: laserArr[i].top,
+						width: laserArr[i].width,
+						height: laserArr[i].height,
+					};
+					if(collide(rect1, rect2)) {
+						if(self.laserArr.length > 0) {
+							var len = self.laserArr.length - 1;
+							self.laserArr.splice(len, 1);
+						}
+						return true;
+					} else {
+						continue;
 					}
-					return true;
-				} else {
-					return false;
 				}
 			}
 			return false;
@@ -195,7 +197,7 @@
 			var self = this;
 			let maxLeft = document.getElementById("main").offsetWidth;//最大top
 			let maxTop = document.getElementById("main").offsetHeight;//最大left
-			
+
 			//发射子弹
 			if(self.phonePlear.pushNow - 10 > 0) {
 				self.phonePlear.pushNow -= 10;
@@ -212,8 +214,8 @@
 				self.laserArr.push(laser);
 				self.phonePlear.pushNow = self.phonePlear.pushSpeed;
 			}
-			
-			
+
+
 			//生成敌机
 			if(self.frequencyNow - 10 > 0) {
 				self.frequencyNow -= 10;
@@ -236,8 +238,8 @@
 				self.targetArr.push(target);
 				self.frequencyNow = self.frequency;
 			}
-			
-			
+
+
 			//子弹运动
 			for(var i = 0; i < self.laserArr.length;) {
 				self.laserArr[i].top -= self.laserArr[i].speed;
@@ -247,8 +249,8 @@
 					i++;
 				}
 			}
-			
-			
+
+
 			//爆炸消失
 			for(var i = 0; i < self.boomArr.length;) {
 				if(self.boomArr[i].op > 0) {
@@ -258,7 +260,7 @@
 					self.boomArr.splice(i, 1);
 				}
 			}
-			
+
 			//敌机运动
 			for(var i = 0; i < self.targetArr.length;) {
 				self.targetArr[i].top += self.targetArr[i].speed;
@@ -300,7 +302,7 @@
 			} else {
 				touch = event;
 			}
-			
+
 			this.position.x = touch.clientX;
 			this.position.y = touch.clientY;
 			this.dx = this.phonePlear.left;
@@ -319,8 +321,8 @@
 				this.ny = touch.clientY - this.position.y;
 				this.xPum = this.dx + this.nx;
 				this.yPum = this.dy + this.ny;
-				this.phonePlear.left = this.xPum;
-				this.phonePlear.top = this.yPum;
+				if (this.xPum > 0 && this.xPum < window.innerWidth - this.phonePlear.width) this.phonePlear.left = this.xPum;
+				if (this.yPum > 22 && this.yPum < window.innerHeight - this.phonePlear.height - 22) this.phonePlear.top = this.yPum;
 			}
 		},
 		//鼠标释放时候的函数
@@ -398,11 +400,10 @@ function inputQueue() {
 //判断两个矩形是否重叠
 var collide = function(rect1, rect2) {
 	var maxX, maxY, minX, minY;
-	maxX = rect1.x + rect1.width >= rect2.x + rect2.width ? rect1.x + rect1.width : rect2.x + rect2.width
-	maxY = rect1.y + rect1.height >= rect2.y + rect2.height ? rect1.y + rect1.height : rect2.y + rect2.height
-	minX = rect1.x <= rect2.x ? rect1.x : rect2.x
-	minY = rect1.y <= rect2.y ? rect1.y : rect2.y
-
+	maxX = rect1.x + rect1.width >= rect2.x + rect2.width ? rect1.x + rect1.width : rect2.x + rect2.width; //
+	maxY = rect1.y + rect1.height >= rect2.y + rect2.height ? rect1.y + rect1.height : rect2.y + rect2.height;
+	minX = rect1.x <= rect2.x ? rect1.x : rect2.x;
+	minY = rect1.y <= rect2.y ? rect1.y : rect2.y;
 	if(maxX - minX <= rect1.width + rect2.width && maxY - minY <= rect1.height + rect2.height) {
 		return true
 	} else {
